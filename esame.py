@@ -4,17 +4,18 @@ class ExamException(Exception):
 class CSVTimeSeriesFile:
     def __init__(self, name):
         self.name = name
-        
+
     def find_file(self):
         try:
             my_file = open(self.name)
         except FileNotFoundError:
             raise ExamException("File not found")
         return my_file
-        
+
     def get_data(self):
         my_file = self.find_file()
         my_list = []
+        
         for line in my_file:
             elements = line.split(',')
             try:
@@ -23,17 +24,19 @@ class CSVTimeSeriesFile:
                 my_list.append(elements)
             except Exception:
                 continue
+
+        if not my_list:
+            raise ExamException('Lista valori vuota')
+
+        for i in range(len(my_list)-1):
+            current = my_list[i]
+            next = my_list[i+1]
+            if next <= current:
+                raise ExamException('Lista valori non valida')
+
         return my_list
 
 def compute_daily_max_difference(time_series):
-    if not time_series:
-        raise ExamException('Lista valori vuota')
-    for i in range(len(time_series)-1):
-        current = time_series[i]
-        next = time_series[i+1]
-        if next <= current:
-            raise ExamException('Lista valori non valida')
-
     output = []
     all_days = []
     current_day = []
@@ -57,9 +60,8 @@ def compute_daily_max_difference(time_series):
             
     return output
 
-"""
-test = CSVTimeSeriesFile('exam_file.csv')
+
+test = CSVTimeSeriesFile(name = 'exam_file.csv')
 time_series = test.get_data()
 print(time_series)
 print(compute_daily_max_difference(time_series))
-"""
