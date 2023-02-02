@@ -59,9 +59,3 @@ def compute_daily_max_difference(time_series):
             output.append(max(day)-min(day))
             
     return output
-
-
-test = CSVTimeSeriesFile(name = 'exam_file.csv')
-time_series = test.get_data()
-print(time_series)
-print(compute_daily_max_difference(time_series))
